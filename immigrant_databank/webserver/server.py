@@ -1,7 +1,7 @@
 # @Author: Gutu, Bilal <Bilal_gutu>
 # @Date:   2022-04-15T03:26:25-04:00
 # @Last modified by:   Bilal_gutu
-# @Last modified time: 2022-04-15T03:58:42-04:00
+# @Last modified time: 2022-04-15T15:47:03-04:00
 
 
 
@@ -26,47 +26,16 @@ import os
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response
+import db, auth
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
 
 
 
-# XXX: The Database URI should be in the format of:
-#
-#     postgresql://USER:PASSWORD@<IP_OF_POSTGRE_SQL_SERVER>/<DB_NAME>
-#
-# For example, if you had username ewu2493, password foobar, then the following line would be:
-#
-#     DATABASEURI = "postgresql://ewu2493:foobar@<IP_OF_POSTGRE_SQL_SERVER>/postgres"
-#
-# For your convenience, we already set it to the class database
-
-# Use the DB credentials you received by e-mail
-DB_USER = "brg2138"
-DB_PASSWORD = "Yay4111!"
-
-DB_SERVER = "w4111.cisxo09blonu.us-east-1.rds.amazonaws.com"
-
-DATABASEURI = "postgresql://"+DB_USER+":"+DB_PASSWORD+"@"+DB_SERVER+"/proj1part2"
+app.register_blueprint(auth.bp)
 
 
-#
-# This line creates a database engine that knows how to connect to the URI above
-#
-engine = create_engine(DATABASEURI)
-
-# engine.execute("""grant usage on all sequences in schema public TO brg2138;""")
-
-
-# Here we create a test table and insert some values in it
-engine.execute("""DROP TABLE IF EXISTS test;""")
-engine.execute("""DROP TABLE IF EXISTS test1;""")
-engine.execute("""CREATE TABLE IF NOT EXISTS test (
-  id serial,
-  name text);
-  """)
-engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
 
 
 
@@ -80,7 +49,7 @@ def before_request():
   The variable g is globally accessible
   """
   try:
-    g.conn = engine.connect()
+    g.conn = db.engine.connect()
   except:
     print ("uh oh, problem connecting to database")
     import traceback; traceback.print_exc()
@@ -164,7 +133,9 @@ def index():
   #     <div>{{n}}</div>
   #     {% endfor %}
   #
-  context = dict(data = (names, address))
+  # context = dict(data = name)
+  context = dict(name = names, address = address)
+
 
 
   #
