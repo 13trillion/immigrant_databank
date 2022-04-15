@@ -1,0 +1,8 @@
+#!/bin/sh
+
+#Setup the app and running enviornment
+export FLASK_APP=immigrant_databank
+export FLASK_ENV=development
+
+#run app
+flask run
