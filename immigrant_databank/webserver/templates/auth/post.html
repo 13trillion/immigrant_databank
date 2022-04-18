@@ -1,12 +1,11 @@
 {% extends 'base.html'%}
 
-<!DOCTYPE HTML>
+{% block title %}Post Resource{% endblock %}
 
-<html>
-
-
-		<!-- Header -->
-		{% include 'header.html'%}
+	{% block header %}
+	<!-- Header -->
+	{% include 'header.html'%}
+	{% endblock %}
 		<!-- Wrapper -->
     {% block content %}
 			<div id="wrapper">
@@ -17,37 +16,43 @@
 							<h1 class="major">Post Rules:</h1>
 							<span class="image fit"><img src="images/pic04.jpg" alt="" /></span>
 							<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Curabitur sapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique.</p>
-							<p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fersapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique lorem ipsum dolor.</p>
 						</div>
 					</section>
 
           <section>
-            <h2>Form</h2>
+            <h2>Resource</h2>
             <form method="POST" >
               <div class="row gtr-uniform">
                 <div class="col-12 col-12-xsmall">
-                  <input type="text" name="post_title" id="demo-name" value="" placeholder="Post Title" />
+                  <input type="text" name="post_title" id="post_title" value="" placeholder="Post Title" />
+									<input type="text" name="url" id="url" value="" placeholder="url" />
                 </div>
-            
+									<!-- Category List -->
                 <div class="col-12">
 									<select name="category" data-live-search="true" id="category" title="Category">
 										<option value="">-Category-</option>
-										{% for n in categories.values() %}
-										<option  value="{{n['category_name']}}">{{n['category_name']}}</option>
+										{% for n in categories.keys() %}
+										<option  value="{{n}}">{{categories.get(n)['category_name']}}</option>
 										{% endfor %}
 									</select>
                 </div>
-                <div class="col-4 col-12-small">
-                  <input type="radio" id="demo-priority-low" name="demo-priority" checked>
-                  <label for="demo-priority-low">Low</label>
+
+								<div class="col-12">
+									<select name="category" data-live-search="true" id="category" title="Category">
+										<option value="">-Accessibility-</option>
+										<option  value="website">Website</option>
+										<option  value="class">Class</option>
+										<option  value="book">Book</option>
+										<option  value="organization">Organization</option>
+									</select>
                 </div>
                 <div class="col-4 col-12-small">
-                  <input type="radio" id="demo-priority-normal" name="demo-priority">
-                  <label for="demo-priority-normal">Normal</label>
+                  <input type="radio" id="mode" name="mode" value = "Online" checked>
+                  <label for="demo-priority-Online">Online</label>
                 </div>
                 <div class="col-4 col-12-small">
-                  <input type="radio" id="demo-priority-high" name="demo-priority">
-                  <label for="demo-priority-high">High</label>
+                  <input type="radio" id="mode" name="mode" value="In-Person">
+                  <label for="demo-priority-normal">In-Person</label>
                 </div>
                 <div class="col-6 col-12-small">
                   <input type="checkbox" id="demo-copy" name="demo-copy">
@@ -73,7 +78,3 @@
 			</div>
 
       {% endblock %}
-
-
-
-</html>

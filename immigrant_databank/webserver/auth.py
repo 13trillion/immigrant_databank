@@ -1,7 +1,7 @@
 # @Author: Gutu, Bilal <Bilal_gutu>
 # @Date:   2022-04-15T15:30:36-04:00
 # @Last modified by:   Bilal_gutu
-# @Last modified time: 2022-04-18T06:43:15-04:00
+# @Last modified time: 2022-04-18T17:11:18-04:00
 import functools
 
 from flask import (
@@ -27,7 +27,19 @@ def post():
 
     context = dict(categories = cate)
     cursor.close()
-    
+# pid 	uid 	category_id 	post_date 	post_title 	post_description
+    if request.method == 'POST':
+        user_id = session.get('user_id')
+        category_id = request.form['category']
+        post_title = request.form['post_title']
+        post_description = request.form['post_description']
+
+        params = (user_id, category_id, post_title, post_description)
+        if user_id and category_id and post_title and post_description:
+            cur = g.conn.execute("INSERT INTO Posts(uid, category_id, post_title, post_description) VALUES (%s, %s, %s, %s)", params)
+
+        return redirect(url_for('index'))
+
     return render_template('auth/post.html', **context)
 
 @bp.route('/register', methods=('GET', 'POST'))
