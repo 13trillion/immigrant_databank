@@ -11,11 +11,13 @@
 				<div class="inner">
 					<nav>
 						<ul>
-							<li><a href="#intro">Welcome</a></li>
+
 							{% if g.user %}
+								<li><a href="/home">Home</a></li>
 								<li><span>{{ g.user['username'] }}</span>
 								<li><a href="{{ url_for('auth.logout') }}">Log Out</a>
 							{% else %}
+							<li><a href="/">Home</a></li>
 							<li><a href="{{ url_for('auth.register') }}">Register</a>
 							<li><a href="{{ url_for('auth.login') }}">Log In</a>
 							{% endif %}

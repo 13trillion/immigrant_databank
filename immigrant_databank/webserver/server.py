@@ -1,7 +1,7 @@
 # @Author: Gutu, Bilal <Bilal_gutu>
 # @Date:   2022-04-15T03:26:25-04:00
 # @Last modified by:   Bilal_gutu
-# @Last modified time: 2022-04-18T04:53:58-04:00
+# @Last modified time: 2022-04-18T06:25:07-04:00
 
 
 
@@ -96,54 +96,9 @@ def base():
   return render_template("base.html")
 
 
-# # @app.route('/home')
-# def index():
-#   """
-#   request is a special object that Flask provides to access web request information:
-#
-#   request.method:   "GET" or "POST"
-#   request.form:     if the browser submitted a form, this contains the data in the form
-#   request.args:     dictionary of URL arguments e.g., {a:1, b:2} for http://localhost?a=1&b=2
-#
-#   See its API: http://flask.pocoo.org/docs/0.10/api/#incoming-request-data
-#   """
-#
-#   # DEBUG: this is debugging code to see what request looks like
-#   print (request.args)
-#
-#
-#   #
-#   # example of a database query
-#   #
-#   cursor = g.conn.execute("SELECT * FROM Posts NATURAL JOIN Category NATURAL JOIN Resource")
-#
-#
-#   post = {}
-#   for result in cursor:
-#     post[result['pid']] = {
-#         'category_name': result['category_name'],
-#         'post_title': result['post_title'],
-#         'post_description': result['post_description'],
-#         'post_url':result['url']
-#     }
-#
-#   cursor = g.conn.execute("SELECT * FROM Category")
-#   cate = {}
-#   for result in cursor:
-#       cate[result['category_id']] = {
-#           'category_name': result['category_name']
-#       }
-#   cursor.close()
-#
-#
-#
-#   context = dict(data = post, categories = cate)
-#
-#   return render_template("index.html", **context)
 
 
 
-# @app.route('/search', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET'])
 def index():
     cursor = g.conn.execute("SELECT * FROM Posts NATURAL JOIN Category NATURAL JOIN Resource")
@@ -194,6 +149,12 @@ def index():
                     WHERE category_name = %s
                     """
             cursor = g.conn.execute(statement, category_name)
+        else:
+            statement = """
+                    SELECT *
+                    FROM Posts NATURAL JOIN Category NATURAL JOIN Resource
+                    """
+            cursor = g.conn.execute(statement)
         res = {}
         for result in cursor:
             res[result['pid']] = {
@@ -213,6 +174,8 @@ def index():
     return render_template('index.html', **context)
 
 
+
+
 if __name__ == "__main__":
   import click
 
@@ -220,7 +183,7 @@ if __name__ == "__main__":
   @click.option('--debug', is_flag=True)
   @click.option('--threaded', is_flag=True)
   @click.argument('HOST', default='0.0.0.0')
-  @click.argument('PORT', default=8111, type=int)
+  @click.argument('PORT', default=8008, type=int)
   def run(debug, threaded, host, port):
     """
     This function handles command line parameters.

@@ -1,7 +1,7 @@
 # @Author: Gutu, Bilal <Bilal_gutu>
 # @Date:   2022-04-15T15:30:36-04:00
 # @Last modified by:   Bilal_gutu
-# @Last modified time: 2022-04-18T04:52:40-04:00
+# @Last modified time: 2022-04-18T06:43:15-04:00
 import functools
 
 from flask import (
@@ -14,6 +14,21 @@ from db import get_db
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 conn = get_db()
+
+
+@bp.route('/post', methods=('GET', 'POST'))
+def post():
+    cursor = g.conn.execute("SELECT * FROM Category")
+    cate = {}
+    for result in cursor:
+      cate[result['category_id']] = {
+          'category_name': result['category_name']
+      }
+
+    context = dict(categories = cate)
+    cursor.close()
+    
+    return render_template('auth/post.html', **context)
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
