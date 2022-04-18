@@ -17,10 +17,10 @@
 
       <div class="col-12">
         <div class="col-12">
-          <select name="category" id="category">
+          <select id="category">
             <option>- Category -</option>
             {% for n in categories.values() %}
-            <option value="{{n['category_id']}}">{{n['category_name']}}</option>
+            <option name="category" value="{{n['category_id']}}">{{n['category_name']}}</option>
             {% endfor %}
           </select>
       </div>

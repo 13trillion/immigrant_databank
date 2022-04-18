@@ -15,9 +15,36 @@
 	{% block content %}
 
 				<!-- Intro -->
+				<section>
+				  <h1> Search for Resources </h1>
+				  <form method="GET" >
+				    <div class="row gtr-uniform">
 
+							<div class="col-12">
+								<select name="category" data-live-search="true" id="category" title="Category">
+									<option value="">-Category-</option>
+									{% for n in categories.values() %}
+									<option  value="{{n['category_name']}}">{{n['category_name']}}</option>
+									{% endfor %}
+								</select>
+								<!-- <input type="hidden" name="hidden_value" id="hidden_value" /> -->
+							</div>
+				      <div class="col-12">
+
+				      <div class="col-6 col-12-xsmall">
+				        <input type="text" name="query_term" id="query_term" value="" placeholder="Search" />
+				      </div>
+				    </div>
+
+						<div class="col-12">
+							<ul class="actions center">
+								<li><input type="submit" value="Search" class="primary" /></li>
+							</ul>
+						</div>
+				  </form>
+				</section>
 				<!-- One -->
-		
+
 
 					<section id="one" class="wrapper style2 spotlights">
 					{% for n in data.values() %}
@@ -38,19 +65,32 @@
 					</section>
 
 				<!-- Two -->
-					<section id="two" class="wrapper style3 fade-up">
-						<div class="inner">
-							<h2>What we do</h2>
-							<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus, lacus eget hendrerit bibendum, urna est aliquam sem, sit amet imperdiet est velit quis lorem.</p>
-							<div class="features">
-								<section>
-									<span class="icon solid major fa-code"></span>
-									<h3>Lorem ipsum amet</h3>
-									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
-							</div>
-						</div>
-					</section>
 
+				<script>
+			$(document).ready(function(){
+			    load_data();
+			    function load_data(query='')
+			    {
+			        $.ajax({
+			            url:"/home",
+			            method:"GET",
+			            data:{query:query},
+			            success:function(data)
+			            {
+			                $('content').html(data);
+			                $('content').append(data.htmlresponse);
+			            }
+			        })
+			    }
+
+			    $('#category').change(function(){
+			        $('#hidden_value').val($('#category').val());
+			        var query = $('#hidden_value').val();
+			        load_data(query);
+			    });
+
+			});
+			</script>
 	{% endblock %}
 
 

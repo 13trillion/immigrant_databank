@@ -1,7 +1,7 @@
 # @Author: Gutu, Bilal <Bilal_gutu>
 # @Date:   2022-04-15T03:26:25-04:00
 # @Last modified by:   Bilal_gutu
-# @Last modified time: 2022-04-18T01:40:31-04:00
+# @Last modified time: 2022-04-18T04:20:26-04:00
 
 
 
@@ -93,31 +93,10 @@ def base():
   See its API: http://flask.pocoo.org/docs/0.10/api/#incoming-request-data
   """
 
-  # DEBUG: this is debugging code to see what request looks like
-  print (request.args)
-
-  cursor = g.conn.execute("SELECT * FROM Posts NATURAL JOIN Category NATURAL JOIN Resource")
+  return render_template("base.html")
 
 
-  post = {}
-  for result in cursor:
-      post[result['pid']] = {
-          'category_id': result['category_id'],
-          'category_name': result['category_name'],
-          'post_title': result['post_title'],
-          'post_description': result['post_description'],
-          'post_url':result['url']
-          }
-
-  cursor.close()
-
-
-  context = dict(data = post)
-
-  return render_template("base.html", **context)
-
-
-@app.route('/home')
+# @app.route('/home')
 def index():
   """
   request is a special object that Flask provides to access web request information:
@@ -141,18 +120,24 @@ def index():
 
   post = {}
   for result in cursor:
-      post[result['pid']] = {
-          'category_id': result['category_id'],
-          'category_name': result['category_name'],
-          'post_title': result['post_title'],
-          'post_description': result['post_description'],
-          'post_url':result['url']
-          }
+    post[result['pid']] = {
+        'category_name': result['category_name'],
+        'post_title': result['post_title'],
+        'post_description': result['post_description'],
+        'post_url':result['url']
+    }
 
+  cursor = g.conn.execute("SELECT * FROM Category")
+  cate = {}
+  for result in cursor:
+      cate[result['category_id']] = {
+          'category_name': result['category_name']
+      }
   cursor.close()
 
 
-  context = dict(data = post)
+
+  context = dict(data = post, categories = cate)
 
   return render_template("index.html", **context)
 
@@ -179,44 +164,73 @@ def another():
 #   return redirect('/')
 
 
-@app.route('/search', methods=['GET', 'POST'])
+# @app.route('/search', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET'])
 def search():
-    cursor = conn.execute("SELECT * FROM Category")
+    cursor = g.conn.execute("SELECT * FROM Posts NATURAL JOIN Category NATURAL JOIN Resource")
+    post = {}
     cate = {}
     for result in cursor:
-        cate[result['category_id']] = {
-            'category_name': result['category_name']
-        }
+      post[result['pid']] = {
+          'category_id': result['category_id'],
+          'category_name': result['category_name'],
+          'post_title': result['post_title'],
+          'post_description': result['post_description'],
+          'post_url':result['url']
+      }
+      cate[result['category_id']] = {
+          'category_name': result['category_name']
+      }
     cursor.close()
-    context = dict(categories = cate)
+
+    context = dict(data = post, categories = cate)
 
     if request.method == 'GET':
         query_term = request.args.get('query_term')
-        category_id = request.args.get('category')
+        category_name = request.args.get('category')
 
         db = conn
         error = None
-        print(query_term)
-        print(category_id)
+        q = f'%{query_term}%'
 
-        if query_term:
+        if query_term and category_name:
             statement = """
                     SELECT *
                     FROM Posts NATURAL JOIN Category NATURAL JOIN Resource
-                    WHERE post_title ILIKE %s OR post_description ILIKE  %s
+                    WHERE post_title ILIKE %s AND post_description ILIKE %s AND category_name = %s
                     """
-            params = (query_term, query_term)
 
-            cur = conn.execute(statement, params)
+            cursor = g.conn.execute(statement, q, q, category_name)
+        elif query_term and not category_name:
+            statement = """
+                    SELECT *
+                    FROM Posts NATURAL JOIN Category NATURAL JOIN Resource
+                    WHERE post_title ILIKE %s AND post_description ILIKE %s
+                    """
+            cursor = g.conn.execute(statement, q, q)
+        elif not query_term and category_name:
+            statement = """
+                    SELECT *
+                    FROM Posts NATURAL JOIN Category NATURAL JOIN Resource
+                    WHERE category_name = %s
+                    """
+            cursor = g.conn.execute(statement, category_name)
+        res = {}
+        for result in cursor:
+            res[result['pid']] = {
+                 'category_id': result['category_id'],
+                 'category_name': result['category_name'],
+                 'post_title': result['post_title'],
+                 'post_description': result['post_description'],
+                 'post_url':result['url']
+            }
 
-            for n in cur.fetchall():
-                print(n)
-    # else:
-    #     return render_template('.search', **context)
+            print(result)
+        context = dict (data = res, categories = cate)
+        return render_template('index.html', **context)
 
 
-
-    return render_template('search.html', **context)
+    return render_template('index.html', **context)
 
 
 if __name__ == "__main__":
