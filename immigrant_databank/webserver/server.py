@@ -1,7 +1,7 @@
 # @Author: Gutu, Bilal <Bilal_gutu>
 # @Date:   2022-04-15T03:26:25-04:00
 # @Last modified by:   Bilal_gutu
-# @Last modified time: 2022-04-18T04:20:26-04:00
+# @Last modified time: 2022-04-18T04:49:07-04:00
 
 
 
@@ -96,77 +96,56 @@ def base():
   return render_template("base.html")
 
 
-# @app.route('/home')
-def index():
-  """
-  request is a special object that Flask provides to access web request information:
-
-  request.method:   "GET" or "POST"
-  request.form:     if the browser submitted a form, this contains the data in the form
-  request.args:     dictionary of URL arguments e.g., {a:1, b:2} for http://localhost?a=1&b=2
-
-  See its API: http://flask.pocoo.org/docs/0.10/api/#incoming-request-data
-  """
-
-  # DEBUG: this is debugging code to see what request looks like
-  print (request.args)
-
-
-  #
-  # example of a database query
-  #
-  cursor = g.conn.execute("SELECT * FROM Posts NATURAL JOIN Category NATURAL JOIN Resource")
-
-
-  post = {}
-  for result in cursor:
-    post[result['pid']] = {
-        'category_name': result['category_name'],
-        'post_title': result['post_title'],
-        'post_description': result['post_description'],
-        'post_url':result['url']
-    }
-
-  cursor = g.conn.execute("SELECT * FROM Category")
-  cate = {}
-  for result in cursor:
-      cate[result['category_id']] = {
-          'category_name': result['category_name']
-      }
-  cursor.close()
-
-
-
-  context = dict(data = post, categories = cate)
-
-  return render_template("index.html", **context)
-
+# # @app.route('/home')
+# def index():
+#   """
+#   request is a special object that Flask provides to access web request information:
 #
-# This is an example of a different path.  You can see it at
+#   request.method:   "GET" or "POST"
+#   request.form:     if the browser submitted a form, this contains the data in the form
+#   request.args:     dictionary of URL arguments e.g., {a:1, b:2} for http://localhost?a=1&b=2
 #
-#     localhost:8111/another
+#   See its API: http://flask.pocoo.org/docs/0.10/api/#incoming-request-data
+#   """
 #
-# notice that the functio name is another() rather than index()
-# the functions for each app.route needs to have different names
+#   # DEBUG: this is debugging code to see what request looks like
+#   print (request.args)
 #
-@app.route('/another')
-def another():
-  return render_template("anotherfile.html")
+#
+#   #
+#   # example of a database query
+#   #
+#   cursor = g.conn.execute("SELECT * FROM Posts NATURAL JOIN Category NATURAL JOIN Resource")
+#
+#
+#   post = {}
+#   for result in cursor:
+#     post[result['pid']] = {
+#         'category_name': result['category_name'],
+#         'post_title': result['post_title'],
+#         'post_description': result['post_description'],
+#         'post_url':result['url']
+#     }
+#
+#   cursor = g.conn.execute("SELECT * FROM Category")
+#   cate = {}
+#   for result in cursor:
+#       cate[result['category_id']] = {
+#           'category_name': result['category_name']
+#       }
+#   cursor.close()
+#
+#
+#
+#   context = dict(data = post, categories = cate)
+#
+#   return render_template("index.html", **context)
 
-
-# Example of adding new data to the database
-# @app.route('/add', methods=['POST'])
-# def add():
-#   name = request.form['name']
-#   print (name)
-#   cmd = 'INSERT INTO test(name) VALUES (:name1), (:name2)';
-#   g.conn.execute(text(cmd), name1 = name, name2 = name);
-#   return redirect('/')
 
 
 # @app.route('/search', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET'])
-def search():
+def index():
     cursor = g.conn.execute("SELECT * FROM Posts NATURAL JOIN Category NATURAL JOIN Resource")
     post = {}
     cate = {}
