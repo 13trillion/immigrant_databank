@@ -1,7 +1,7 @@
 # @Author: Gutu, Bilal <Bilal_gutu>
 # @Date:   2022-04-15T03:26:25-04:00
 # @Last modified by:   Bilal_gutu
-# @Last modified time: 2022-04-18T04:49:07-04:00
+# @Last modified time: 2022-04-18T04:53:58-04:00
 
 
 
@@ -160,7 +160,7 @@ def index():
       cate[result['category_id']] = {
           'category_name': result['category_name']
       }
-    cursor.close()
+
 
     context = dict(data = post, categories = cate)
 
@@ -206,9 +206,10 @@ def index():
 
             print(result)
         context = dict (data = res, categories = cate)
+        cursor.close()
         return render_template('index.html', **context)
 
-
+    cursor.close()
     return render_template('index.html', **context)
 
 
