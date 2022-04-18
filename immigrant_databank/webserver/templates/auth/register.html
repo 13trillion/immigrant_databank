@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+{% extends 'base.html'%}
+
+
+
+{% block header %}
+  {% include 'header.html'%}
+{% endblock %}
+
+
+{% block content %}
+<section>
+  <h2>Register</h2>
+  <form method="POST" >
+    <div class="row gtr-uniform">
+      <div class="col-6 col-12-xsmall">
+        <input type="email" name="email" id="email" value="" placeholder="Email" />
+      </div>
+      <div class="col-6 col-12-xsmall">
+        <input type="password" name="password" id="password" value="" placeholder="Password" />
+      </div>
+      <div class="col-6 col-12-xsmall">
+        <input type="text" name="name" id="name" value="" placeholder="Name" />
+      </div>
+      <div class="col-6 col-12-xsmall">
+        <select name="gender" id="gender">
+          <option value="">- Gender -</option>
+          <option value="Female">Female</option>
+          <option value="Male">Male</option>
+        </select>
+      </div>
+
+      <div class="col-6 col-12-xsmall">
+        <input type="text" name="address" id="address" value="" placeholder="Address" />
+      </div>
+      <div class="col-6 col-12-xsmall">
+        <input type="text" name="city" id="city" value="" placeholder="City" />
+      </div>
+      <div class="col-6 col-12-xsmall">
+        <input type="text" name="state" id="state" value="" placeholder="State" />
+      </div>
+
+      <div class="col-12">
+        <div class="col-4 col-12-small">
+          <input type="radio" id="immigrant" name="user_type" value= 'immigrant' checked>
+          <label for="immigrant">Immigrant</label>
+        </div>
+        <div class="col-4 col-12-small">
+          <input type="radio" id="agency" name="user_type" value= 'agency'>
+          <label for="agency">Agency</label>
+        </div>
+        <div class="col-6 col-12-small">
+          <input type="checkbox" id="demo-human" name="demo-human" checked>
+          <label for="demo-human">Not a robot</label>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <ul class="actions">
+          <li><input type="submit" value="register" class="primary" /></li>
+          <li><input type="reset" value="Reset" /></li>
+          <li><a href="/auth/login" class="button primary">Login</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </form>
+</section>
+
+{%endblock%}

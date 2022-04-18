@@ -1,7 +1,7 @@
 # @Author: Gutu, Bilal <Bilal_gutu>
 # @Date:   2022-04-15T03:26:25-04:00
 # @Last modified by:   Bilal_gutu
-# @Last modified time: 2022-04-15T15:47:03-04:00
+# @Last modified time: 2022-04-18T01:40:31-04:00
 
 
 
@@ -30,14 +30,12 @@ import db, auth
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
+conn = db.get_db()
 
 
-
-app.register_blueprint(auth.bp)
-
-
-
-
+app.config.from_mapping(
+    SECRET_KEY='4our3yes0nly!'
+)
 
 @app.before_request
 def before_request():
@@ -49,7 +47,7 @@ def before_request():
   The variable g is globally accessible
   """
   try:
-    g.conn = db.engine.connect()
+    g.conn = db.get_db()
   except:
     print ("uh oh, problem connecting to database")
     import traceback; traceback.print_exc()
@@ -67,6 +65,8 @@ def teardown_request(exception):
     pass
 
 
+app.register_blueprint(auth.bp)
+
 #
 # @app.route is a decorator around index() that means:
 #   run index() whenever the user tries to access the "/" path using a GET request
@@ -80,7 +80,44 @@ def teardown_request(exception):
 # see for routing: http://flask.pocoo.org/docs/0.10/quickstart/#routing
 # see for decorators: http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/
 #
+
 @app.route('/')
+def base():
+  """
+  request is a special object that Flask provides to access web request information:
+
+  request.method:   "GET" or "POST"
+  request.form:     if the browser submitted a form, this contains the data in the form
+  request.args:     dictionary of URL arguments e.g., {a:1, b:2} for http://localhost?a=1&b=2
+
+  See its API: http://flask.pocoo.org/docs/0.10/api/#incoming-request-data
+  """
+
+  # DEBUG: this is debugging code to see what request looks like
+  print (request.args)
+
+  cursor = g.conn.execute("SELECT * FROM Posts NATURAL JOIN Category NATURAL JOIN Resource")
+
+
+  post = {}
+  for result in cursor:
+      post[result['pid']] = {
+          'category_id': result['category_id'],
+          'category_name': result['category_name'],
+          'post_title': result['post_title'],
+          'post_description': result['post_description'],
+          'post_url':result['url']
+          }
+
+  cursor.close()
+
+
+  context = dict(data = post)
+
+  return render_template("base.html", **context)
+
+
+@app.route('/home')
 def index():
   """
   request is a special object that Flask provides to access web request information:
@@ -99,49 +136,24 @@ def index():
   #
   # example of a database query
   #
-  cursor = g.conn.execute("SELECT * FROM Users")
-  names = []
-  address = []
+  cursor = g.conn.execute("SELECT * FROM Posts NATURAL JOIN Category NATURAL JOIN Resource")
+
+
+  post = {}
   for result in cursor:
-    names.append(result['name'])  # can also be accessed using result[0]
-    address.append(result['address'])
+      post[result['pid']] = {
+          'category_id': result['category_id'],
+          'category_name': result['category_name'],
+          'post_title': result['post_title'],
+          'post_description': result['post_description'],
+          'post_url':result['url']
+          }
+
   cursor.close()
 
-  #
-  # Flask uses Jinja templates, which is an extension to HTML where you can
-  # pass data to a template and dynamically generate HTML based on the data
-  # (you can think of it as simple PHP)
-  # documentation: https://realpython.com/blog/python/primer-on-jinja-templating/
-  #
-  # You can see an example template in templates/index.html
-  #
-  # context are the variables that are passed to the template.
-  # for example, "data" key in the context variable defined below will be
-  # accessible as a variable in index.html:
-  #
-  #     # will print: [u'grace hopper', u'alan turing', u'ada lovelace']
-  #     <div>{{data}}</div>
-  #
-  #     # creates a <div> tag for each element in data
-  #     # will print:
-  #     #
-  #     #   <div>grace hopper</div>
-  #     #   <div>alan turing</div>
-  #     #   <div>ada lovelace</div>
-  #     #
-  #     {% for n in data %}
-  #     <div>{{n}}</div>
-  #     {% endfor %}
-  #
-  # context = dict(data = name)
-  context = dict(name = names, address = address)
 
+  context = dict(data = post)
 
-
-  #
-  # render_template looks in the templates/ folder for files.
-  # for example, the below file reads template/index.html
-  #
   return render_template("index.html", **context)
 
 #
@@ -158,19 +170,53 @@ def another():
 
 
 # Example of adding new data to the database
-@app.route('/add', methods=['POST'])
-def add():
-  name = request.form['name']
-  print (name)
-  cmd = 'INSERT INTO test(name) VALUES (:name1), (:name2)';
-  g.conn.execute(text(cmd), name1 = name, name2 = name);
-  return redirect('/')
+# @app.route('/add', methods=['POST'])
+# def add():
+#   name = request.form['name']
+#   print (name)
+#   cmd = 'INSERT INTO test(name) VALUES (:name1), (:name2)';
+#   g.conn.execute(text(cmd), name1 = name, name2 = name);
+#   return redirect('/')
 
 
-@app.route('/login')
-def login():
-    abort(401)
-    this_is_never_executed()
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    cursor = conn.execute("SELECT * FROM Category")
+    cate = {}
+    for result in cursor:
+        cate[result['category_id']] = {
+            'category_name': result['category_name']
+        }
+    cursor.close()
+    context = dict(categories = cate)
+
+    if request.method == 'GET':
+        query_term = request.args.get('query_term')
+        category_id = request.args.get('category')
+
+        db = conn
+        error = None
+        print(query_term)
+        print(category_id)
+
+        if query_term:
+            statement = """
+                    SELECT *
+                    FROM Posts NATURAL JOIN Category NATURAL JOIN Resource
+                    WHERE post_title ILIKE %s OR post_description ILIKE  %s
+                    """
+            params = (query_term, query_term)
+
+            cur = conn.execute(statement, params)
+
+            for n in cur.fetchall():
+                print(n)
+    # else:
+    #     return render_template('.search', **context)
+
+
+
+    return render_template('search.html', **context)
 
 
 if __name__ == "__main__":

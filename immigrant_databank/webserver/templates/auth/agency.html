@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+{% extends 'base.html'%}
+
+
+
+{% block header %}
+  {% include 'header.html'%}
+{% endblock %}
+
+
+{% block content %}
+<section>
+  <h2>Agency Registeration</h2>
+  <form method="POST" >
+    <div class="row gtr-uniform">
+      <div class="col-6 col-12-xsmall">
+        <input type="text" name="agency_type" id="agency_type" value="" placeholder="Agency Type" />
+      </div>
+      <div class="col-6 col-12-xsmall">
+        <input type="date" name="established" id="established" value="" placeholder="Established Date" />
+      </div>
+      <div class="col-6 col-12-xsmall">
+        <input type="number" name="agency_size" id="agency_size" value="" placeholder="Agency Size" />
+      </div>
+      <div class="col-6 col-12-xsmall">
+        <input type="number" name="budget" id="budget" value="" placeholder="Agency Budget" />
+      </div>
+
+      <div class="col-12">
+        <select name="category" id="category">
+          <option value="">- Focus -</option>
+          {% for n in category.values() %}
+          <option value="{{n['category_id']}}">{{n['category_name']}}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+
+      <div class="col-12">
+        <div class="col-6 col-12-small">
+          <input type="checkbox" id="demo-human" name="demo-human" checked>
+          <label for="demo-human">Not a robot</label>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <ul class="actions">
+          <li><input type="submit" value="register" class="primary" /></li>
+          <li><input type="reset" value="Reset" /></li>
+          <li><a href="/auth/login" class="button primary">Login</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </form>
+</section>
+
+{%endblock%}

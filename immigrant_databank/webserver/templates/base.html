@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+
+<html>
+	{% include 'head.html' %}
+	<body class="is-preload">
+
+		<!-- Sidebar -->
+		{% block header %}
+			<section id="sidebar">
+
+				<div class="inner">
+					<nav>
+						<ul>
+							<li><a href="#intro">Welcome</a></li>
+							{% if g.user %}
+								<li><span>{{ g.user['username'] }}</span>
+								<li><a href="{{ url_for('auth.logout') }}">Log Out</a>
+							{% else %}
+							<li><a href="{{ url_for('auth.register') }}">Register</a>
+							<li><a href="{{ url_for('auth.login') }}">Log In</a>
+							{% endif %}
+						</ul>
+					</nav>
+				</div>
+
+			</section>
+			{% endblock %}
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+				<section id="main" class="wrapper">
+					<div class="inner">
+
+			{% for message in get_flashed_messages() %}
+		    <div class="flash">{{ message }}</div>
+		  {% endfor %}
+			{% block content %}
+				{% include 'body.html' %}
+			{% endblock %}
+
+
+
+				</div>
+			</section>
+		</div>
+
+		<!-- Footer -->
+			{% include 'footer.html' %}
+
+		<!-- Scripts -->
+			{% include 'scripts.html' %}
+	</body>
+</html>

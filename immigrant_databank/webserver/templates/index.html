@@ -1,30 +1,58 @@
+
+<!DOCTYPE HTML>
+
+{% extends 'base.html' %}
+
 <html>
-  <style>
-    body{
-      font-size: 15pt;
-      font-family: arial;
-    }
-  </style>
+
+{% block header %}
+  {% include 'header.html'%}
+{% endblock %}
+
+		<!-- Sidebar -->
 
 
-<body>
-  <h1>User Databank</h1>
-  <div>{{name}}</div>
-  <div>{{address}}</div>
+	{% block content %}
 
-  <div>
-    {% for n in data %}
-    <div>{{n}}</div>
-    {% endfor %}
-  </div>
+				<!-- Intro -->
 
-<p><a href="/another">Go to the other page</a></p>
+				<!-- One -->
+		
 
-<form method="POST" action="/add">
-<p>Name of new computer scientist: <input type="text" name="name"> <input type="submit" value="Add"></p>
-</form>
+					<section id="one" class="wrapper style2 spotlights">
+					{% for n in data.values() %}
+						<section>
+							<a href="#" class="image"><img src="static/images/pic-{{n['category_id']}}.jpg" alt="" data-position="center center" /></a>
+							<div class="content">
+								<div class="inner">
+									<h2>{{n['post_title']}}</h2>
+									<h5>{{n['category_name']}} </h5>
+									<p>{{n['post_description']}}</p>
+									<ul class="actions">
+										<li><a href="{{n['post_url']}}" class="button">Learn More</a></li>
+									</ul>
+								</div>
+							</div>
+						</section>
+					{% endfor %}
+					</section>
 
-</body>
+				<!-- Two -->
+					<section id="two" class="wrapper style3 fade-up">
+						<div class="inner">
+							<h2>What we do</h2>
+							<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus, lacus eget hendrerit bibendum, urna est aliquam sem, sit amet imperdiet est velit quis lorem.</p>
+							<div class="features">
+								<section>
+									<span class="icon solid major fa-code"></span>
+									<h3>Lorem ipsum amet</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+							</div>
+						</div>
+					</section>
+
+	{% endblock %}
 
 
+	</body>
 </html>

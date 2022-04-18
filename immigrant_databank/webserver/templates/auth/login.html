@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+  {% include 'header.html'%}
+{% endblock %}
+
+
+{% block content %}
+<section>
+  <h2>Login</h2>
+  <form method="POST" >
+    <div class="row gtr-uniform">
+      <div class="col-6 col-12-xsmall">
+        <input type="email" name="email" id="demo-email" value="" placeholder="Email" />
+      </div>
+      <div class="col-6 col-12-xsmall">
+        <input type="password" name="password" id="demo-password" value="" placeholder="Password" />
+      </div>
+
+      <div class="col-12">
+        <ul class="actions">
+          <li><input type="submit" value="Login" class="primary" /></li>
+          <li><input type="reset" value="Reset" /></li>
+          <li><a href="/auth/register" class="button primary">Register</a></li>
+        </ul>
+      </div>
+    </div>
+  </form>
+</section>
+
+{%endblock%}

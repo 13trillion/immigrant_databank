@@ -1,0 +1,39 @@
+
+
+{% extends 'base.html' %}
+
+{% block header %}
+  {% include 'header.html' %}
+{% endblock %}
+
+
+{% block content %}
+
+
+<section>
+  <h1> Search for Resources </h1>
+  <form method="GET" >
+    <div class="row gtr-uniform">
+
+      <div class="col-12">
+        <div class="col-12">
+          <select name="category" id="category">
+            <option>- Category -</option>
+            {% for n in categories.values() %}
+            <option value="{{n['category_id']}}">{{n['category_name']}}</option>
+            {% endfor %}
+          </select>
+      </div>
+
+      <div class="col-6 col-12-xsmall">
+        <input type="text" name="query_term" id="query_term" value="" placeholder="Search" />
+      </div>
+      <div class="col-12">
+        <ul class="actions">
+          <li><input type="submit" value="Search" class="primary" /></li>
+        </ul>
+      </div>
+    </div>
+  </form>
+</section>
+{% endblock %}

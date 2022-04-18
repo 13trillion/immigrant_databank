@@ -1,0 +1,24 @@
+
+
+
+
+<!-- {{ url_for('static', filename='css/') }}
+{{ url_for('static', filename='images/') }} -->
+
+
+<header id="header">
+  {% block header %}
+  <a href="/" class="title">Immigrant Resource Bank</a>
+  <nav>
+    <ul>
+      <li><a href="/home">Home</a></li>
+      <li><a href="/search">Search</a></li>
+      {% if g.user %}
+        <li><span>{{ g.user['name'] }}</span>
+        <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
+        <li><a href="/post">Post Resource</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endblock %}
+</header>
