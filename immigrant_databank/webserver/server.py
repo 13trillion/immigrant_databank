@@ -1,7 +1,7 @@
 # @Author: Gutu, Bilal <Bilal_gutu>
 # @Date:   2022-04-15T03:26:25-04:00
 # @Last modified by:   Bilal_gutu
-# @Last modified time: 2022-04-18T06:25:07-04:00
+# @Last modified time: 2022-04-18T22:38:21-04:00
 
 
 
@@ -30,7 +30,7 @@ import db, auth
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
-conn = db.get_db()
+
 
 
 app.config.from_mapping(
@@ -60,7 +60,7 @@ def teardown_request(exception):
   If you don't the database could run out of memory!
   """
   try:
-    g.conn.close()
+    db.close_db(g.conn)
   except Exception as e:
     pass
 
@@ -123,7 +123,7 @@ def index():
         query_term = request.args.get('query_term')
         category_name = request.args.get('category')
 
-        db = conn
+
         error = None
         q = f'%{query_term}%'
 
@@ -165,7 +165,7 @@ def index():
                  'post_url':result['url']
             }
 
-            print(result)
+
         context = dict (data = res, categories = cate)
         cursor.close()
         return render_template('index.html', **context)

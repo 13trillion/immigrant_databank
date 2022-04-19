@@ -1,7 +1,7 @@
 # @Author: Gutu, Bilal <Bilal_gutu>
 # @Date:   2022-04-15T02:59:18-04:00
 # @Last modified by:   Bilal_gutu
-# @Last modified time: 2022-04-17T22:36:35-04:00
+# @Last modified time: 2022-04-18T21:40:55-04:00
 
 
 from sqlalchemy import *
@@ -23,3 +23,7 @@ def get_db():
     connection = engine.connect()
 
     return connection
+
+
+def close_db(conn):
+    conn.close()

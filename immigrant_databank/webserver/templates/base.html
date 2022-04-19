@@ -13,8 +13,8 @@
 						<ul>
 						<li><a href="/home">Home</a></li>
 							{% if g.user %}
+								<li><a href="{{ url_for('auth.user_posts') }}"> <span>{{ g.user['name'] }}</span></a> </li>
 								<li><a href="{{ url_for('auth.post') }}">Post Resource</a></li>
-								<li><span>{{ g.user['username'] }}</span>
 								<li><a href="{{ url_for('auth.logout') }}">Log Out</a>
 							{% else %}
 

@@ -13,7 +13,7 @@
     <ul>
       <li><a href="/home">Home</a></li>
       {% if g.user %}
-        <li><span>{{ g.user['name'] }}</span>
+        <li><a href="{{ url_for('auth.user_posts') }}"> <span>{{ g.user['name'] }}</span></a> </li>
         <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
         <li><a href="{{ url_for('auth.post') }}">Post Resource</a></li>
       {% else %}
