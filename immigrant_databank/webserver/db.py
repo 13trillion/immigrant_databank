@@ -9,10 +9,10 @@ from sqlalchemy.pool import NullPool
 
 
 def get_db():
-    DB_USER = "brg2138"
-    DB_PASSWORD = "Yay4111!"
+    DB_USER = ""
+    DB_PASSWORD = ""
 
-    DB_SERVER = "w4111.cisxo09blonu.us-east-1.rds.amazonaws.com"
+    DB_SERVER = ""
 
     DATABASEURI = "postgresql://"+DB_USER+":"+DB_PASSWORD+"@"+DB_SERVER+"/proj1part2"
     #
